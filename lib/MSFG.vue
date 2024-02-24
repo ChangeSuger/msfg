@@ -10,11 +10,6 @@
           <span v-if="itemid !== current_system_breadcrumb.length - 1">{{ '>' }}</span>
         </span>
       </div>
-
-      <div>
-        访问我们的 GitHub 项目（欢迎发现bug 并提交issue）：
-        <a href="https://github.com/aircraft-safety-team-ATE/multiFlowGraph/tree/feature-subsystemSetting-fengzhaoyu" target="_blank">multiFlowGraph 项目</a>
-      </div>
     </div>
 
     <div class="model—tree">
@@ -29,36 +24,54 @@
       />
     </div>
 
-    <Control class="demo-control" v-if="lf" :lf="lf" :G_DATA="G_DATA" @updata-import-data="handle_update_import_data" />
+    <Control
+      class="demo-control"
+      v-if="lf"
+      :lf="lf"
+      :G_DATA="G_DATA"
+      :config="config.control"
+      @updata-import-data="handle_update_import_data"
+    />
 
-    <NodePanel v-if="lf" :lf="lf" :nodeList="nodeList" :G_DATA="G_DATA"
-      @updata-g-data-subsystem="hangdle_update_gdata_subsystem" />
+    <NodePanel
+      v-if="lf"
+      :lf="lf"
+      :nodeList="nodeList"
+      :G_DATA="G_DATA"
+      @updata-g-data-subsystem="hangdle_update_gdata_subsystem"
+    />
 
     <div ref="container" class="LF-view"></div>
 
-    <EditDialog :dialog-visible.sync="dialogVisible" :form-data="formData" @data-update="$_dataUpdate" />
+    <EditDialog
+      :dialog-visible.sync="dialogVisible"
+      :form-data="formData"
+      @data-update="$_dataUpdate"
+    />
   </div>
 </template>
 
 <script>
-import { Tag, Tree, Message } from 'element-ui'
 import { nodeList } from './logicflowConfig/init.js'
 import NodePanel from './components/NodePanel.vue'
 import Control from './components/Control.vue'
 import EditDialog from './components/EditDialog.vue'
 import '@logicflow/extension/lib/style/index.css'
-import 'element-ui/lib/theme-chalk/index.css'
 import './assets/style.css'
 import { methods } from './logicflowConfig'
 
 export default {
-  name: 'MSFG',
+  name: 'msfg',
+  props: {
+    config: {
+      type: Object,
+      default: () => ({}),
+    }
+  },
   components: {
     NodePanel: NodePanel,
     Control: Control,
     EditDialog: EditDialog,
-    'el-tag': Tag,
-    'el-tree': Tree
   },
   data() {
     return {
@@ -77,7 +90,8 @@ export default {
     }
   },
   mounted() {
-    this.$_initLf()
+    this.$_initLf(this.config);
+
     this.module_tree = this.getModuleTree(this.G_DATA.SystemData)
 
     let root_system = this.G_DATA.SystemData.find(item => item.parent_id == null)
@@ -85,11 +99,13 @@ export default {
     this.current_system_breadcrumb = [{ name: root_system.name, id: root_system.system_id }]
   },
   methods: {
+    ...methods,
+
     // 面包屑处理
     handleTagClick(sysid) {
-
       this.handleNodeClick({ id: sysid });
     },
+
     // 跟新G_data数据 更新子系统的input或output
     handle_update_import_data(data) {
 
@@ -126,14 +142,11 @@ export default {
           current_system.data = root_system_import.data
         }
         else {
-
-
           let current_system_rectangle = {
             x_leftUP: 1000000,
             y_leftUP: 1000000,
             x_rightDOWN: -1000000,
             y_rightDOWN: -1000000,
-
           }
           let root_system_import_rectangle = {
             x_leftUP: 1000000,
@@ -173,7 +186,7 @@ export default {
 
             // 修复重复导入bug
             if (current_system.data.nodes.find(item2 => item2.id === item.id) !== undefined) {
-              Message({
+              this.$message({
                 message: '禁止重复导入 (有残余模块也会触发)',
                 type: 'warning'
               });
@@ -192,7 +205,6 @@ export default {
             if (item.type == 'subsystem-node') {
               item.text.x += x_offset
               item.text.y += y_offset
-
             }
 
             current_system.data.nodes.push(item)
@@ -209,8 +221,8 @@ export default {
             })
             current_system.data.edges.push(item)
           })
-
         }
+
         //2.将导入的子系统添加到this.G_DATA
         function getSubSystemRecursive(old_system_id, new_system_id, import_G_DATA, G_DATA) {
           // 调整子系统节点的systemid
@@ -224,8 +236,6 @@ export default {
             return objClone
           }
           children.forEach(item => {
-
-
             let item_copy = deepClone(item)
             let old_system_id = item_copy.system_id
             item_copy.system_id = G_DATA.SystemData.length + 1
@@ -236,10 +246,8 @@ export default {
 
             G_DATA.SystemData.push(item_copy)
 
-
             getSubSystemRecursive(old_system_id, item_copy.system_id, import_G_DATA, G_DATA)
           })
-
         }
 
         getSubSystemRecursive(root_system_import.system_id, current_system.system_id, data.value, this.G_DATA)
@@ -258,8 +266,6 @@ export default {
       } else if (data.type == 'output') {
         parent_system.data.nodes.find(item => item.properties.SubsystemId == data.system_id).properties.fields.output = data.value
       }
-
-
     },
     // 更新G_data数据 添加新子系统
     hangdle_update_gdata(new_system) {
@@ -297,8 +303,6 @@ export default {
       getModuleTreeRecursive(root_node, G_DATA)
       return [root_node]
     },
-
-    ...methods,
     $_dataUpdate(_node) {
       let node = this.lf.graphModel.getNodeModelById(_node.id)
       node.updateText(_node.text.value)
@@ -323,11 +327,10 @@ export default {
       // 颠倒顺序，从root到当前系统
       this.current_system_breadcrumb = this.current_system_breadcrumb.reverse()
 
-      Message({
+      this.$message({
         message: '当前系统已切换为' + this.current_system_breadcrumb.map(item => item.name).join(' > '),
         type: 'success'
       })
-
 
       // 临时补丁，当子系统的属性如input或output发生变化时，先渲染一次，更新子系统的外观属性，手动重新调整 线的起点和终点位置 然后再渲染一次
       // 1. 第一次渲染 并获取渲染后的绘图数据
@@ -363,8 +366,6 @@ export default {
       }
       // 3. 再一次渲染
       this.lf.render(current_system_data)
-
-
     }
   }
 }

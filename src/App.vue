@@ -1,11 +1,7 @@
 <script>
-// import MSFG from '../lib/main';
-
 export default {
   name: 'App',
-  components: {
-    // MSFG
-  },
+  components: {},
   data () {
     return {}
   }
@@ -14,7 +10,7 @@ export default {
 
 <template>
   <div id="app">
-    <MSFG />
+    <msfg />
   </div>
 </template>
 

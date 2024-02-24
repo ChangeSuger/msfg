@@ -32,6 +32,6 @@ module.exports = {
     new VueLoaderPlugin()
   ],
   externals: {
-    vue: 'Vue' // 防止将 Vue 打包进输出文件
+    vue: 'Vue', // 防止将 Vue 打包进输出文件
   },
 }

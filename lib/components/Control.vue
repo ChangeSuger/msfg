@@ -1,7 +1,6 @@
 <template>
   <div>
     <el-button-group>
-      <!-- <el-button type="plain" size="small" @click="$_test">测试用</el-button> -->
       <el-button v-if="controlConfig.zoomIn" type="plain" size="small" @click="$_zoomIn">放大</el-button>
       <el-button v-if="controlConfig.zoomOut" type="plain" size="small" @click="$_zoomOut">缩小</el-button>
       <el-button v-if="controlConfig.zoomReset" type="plain" size="small" @click="$_zoomReset">大小适应</el-button>
@@ -67,51 +66,56 @@
 import { importStruct, exportStruct, renderStructColor } from '../utils/struct'
 import axios from '../utils/axios'
 
-import { Button, ButtonGroup, Table, TableColumn, Dialog, Descriptions, DescriptionsItem, Dropdown, DropdownItem, DropdownMenu, Message } from 'element-ui'
+function ControlConfig (config = {}) {
+  const {
+    zoomIn = true,
+    zoomOut = true,
+    zoomReset = true,
+    translateRest = true,
+    reset = true,
+    undo = true,
+    redo = true,
+    clear = true,
+    reDraw = true,
+    exportData = true,
+    importData = true,
+    importFMECA = true,
+    importSimulink = true,
+    check = true,
+    optimizeCkpt = true,
+    analyse = true,
+  } = config;
+  this.zoomIn = zoomIn;
+  this.zoomOut = zoomOut;
+  this.zoomReset = zoomReset;
+  this.translateRest = translateRest;
+  this.reset = reset;
+  this.undo = undo;
+  this.redo = redo;
+  this.clear = clear;
+  this.reDraw = reDraw;
+  this.exportData = exportData;
+  this.importData = importData;
+  this.importFMECA = importFMECA;
+  this.importSimulink = importSimulink;
+  this.check = check;
+  this.optimizeCkpt = optimizeCkpt;
+  this.analyse = analyse;
+}
 
 export default {
   name: 'Control',
-  components: {
-    'el-button': Button,
-    'el-button-group': ButtonGroup,
-    'el-table': Table,
-    'el-table-column': TableColumn,
-    'el-dialog': Dialog,
-    'el-descriptions': Descriptions,
-    'el-descriptions-item': DescriptionsItem,
-    'el-dropdown': Dropdown,
-    'el-dropdown-item': DropdownItem,
-    'el-dropdown-menu': DropdownMenu
-  },
   props: {
     lf: Object || String,
     G_DATA: Object,
-    controlConfig: {
+    config: {
       type: Object,
-      default: () => {
-        return {
-          zoomIn: true,
-          zoomOut: true,
-          zoomReset: true,
-          translateRest: true,
-          reset: true,
-          undo: true,
-          redo: true,
-          clear: true,
-          reDraw: true,
-          exportData: true,
-          importData: true,
-          importFMECA: true,
-          importSimulink: true,
-          check: true,
-          optimizeCkpt: true,
-          analyse: true
-        }
-      }
+      default: () => ({}),
     }
   },
   data() {
     return {
+      controlConfig: new ControlConfig(this.config),
       undoDisable: true,
       redoDisable: true,
       visible: false,
@@ -293,7 +297,7 @@ export default {
         if (file) {
           const reader = new FileReader();
           reader.onerror = (error) => {
-            Message.error('读取流图文件解析失败', error);
+            this.$message.error('读取流图文件解析失败');
           }
           reader.onload = () => {
             const json = reader.result;
@@ -304,7 +308,7 @@ export default {
                 value: data
               });
             } catch (e) {
-              Message.error('读取流图文件解析失败');
+              this.$message.error('读取流图文件解析失败');
             }
           };
           reader.readAsText(file);
@@ -454,10 +458,6 @@ export default {
         }
       };
       input.click();
-    },
-
-    $_test() {
-
     },
   }
 }

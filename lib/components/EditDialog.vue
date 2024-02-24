@@ -95,20 +95,8 @@
 </template>
 
 <script>
-import { Button, Dialog, Form, FormItem, Select, Option, Input, Switch } from 'element-ui'
-
 export default {
   name: 'EditDialog',
-  components: {
-    'el-button': Button,
-    'el-dialog': Dialog,
-    'el-form': Form,
-    'el-form-item': FormItem,
-    'el-select': Select,
-    'el-option': Option,
-    'el-input': Input,
-    'el-switch': Switch,
-  },
   props: {
     dialogVisible: {
       type: Boolean

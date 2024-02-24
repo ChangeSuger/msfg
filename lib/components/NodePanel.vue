@@ -13,8 +13,6 @@
 </template>
 
 <script>
-import { Message } from 'element-ui';
-
 export default {
   name: 'NodePanel',
   props: {
@@ -46,7 +44,7 @@ export default {
         // 禁止在根系统中创建输入或者输出节点
         let current_system = this.$props.G_DATA.SystemData.find(item => item.system_id == this.$props.G_DATA.currentSystemId)
         if (current_system.parent_id == null) {
-          Message({
+          this.$message({
             message: '禁止在根系统中创建输入或者输出节点',
             type: 'warning'
           });
@@ -72,7 +70,7 @@ export default {
         // 禁止在根系统中创建输入或者输出节点
         let current_system = this.$props.G_DATA.SystemData.find(item => item.system_id == this.$props.G_DATA.currentSystemId)
         if (current_system.parent_id == null) {
-          Message({
+          this.$message({
             message: '禁止在根系统中创建输入或者输出节点',
             type: 'warning'
           });

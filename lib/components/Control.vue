@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-button-group>
+      <el-button type="plain" size="small" @click="$_selectionSelect">选区</el-button>
       <el-button v-if="controlConfig.zoomIn" type="plain" size="small" @click="$_zoomIn">放大</el-button>
       <el-button v-if="controlConfig.zoomOut" type="plain" size="small" @click="$_zoomOut">缩小</el-button>
       <el-button v-if="controlConfig.zoomReset" type="plain" size="small" @click="$_zoomReset">大小适应</el-button>
@@ -136,6 +137,12 @@ export default {
     })
   },
   methods: {
+    $_selectionSelect() {
+      this.$props.lf.extension.selectionSelect.openSelectionSelect();
+      this.$props.lf.once('selection:selected', () => {
+        this.lf.extension.selectionSelect.closeSelectionSelect()
+      })
+    },
     $_zoomIn() {
       this.$props.lf.zoom(true)
     },

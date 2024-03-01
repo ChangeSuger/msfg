@@ -403,7 +403,7 @@ export default {
 .demo-control {
   position: absolute;
   top: 40px;
-  right: 20px;
+  left: 160px;
   z-index: 2;
 }
 

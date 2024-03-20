@@ -93,3 +93,7 @@ div.popper p {
   font-size: 14px;
   line-height: 14px;
 }
+
+.lf-multiple-select {
+  pointer-events: all;
+}

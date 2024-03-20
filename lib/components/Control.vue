@@ -138,9 +138,9 @@ export default {
   },
   methods: {
     $_selectionSelect() {
-      this.$props.lf.extension.selectionSelect.openSelectionSelect();
+      this.$props.lf.openSelectionSelect();
       this.$props.lf.once('selection:selected', () => {
-        this.lf.extension.selectionSelect.closeSelectionSelect()
+        this.lf.closeSelectionSelect();
       })
     },
     $_zoomIn() {

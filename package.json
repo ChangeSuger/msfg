@@ -4,7 +4,8 @@
   "module": "./lib/main.js",
   "scripts": {
     "dev": "vite",
-    "build": "webpack --config ./webpack.config.js",
+    "build": "vite build",
+    "build:lib": "webpack --config ./webpack.config.js",
     "test:unit": "vitest --environment jsdom"
   },
   "dependencies": {

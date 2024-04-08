@@ -9,8 +9,8 @@
     "test:unit": "vitest --environment jsdom"
   },
   "dependencies": {
-    "@logicflow/core": "^1.2.19",
-    "@logicflow/extension": "^1.2.19",
+    "@logicflow/core": "^1.2.25",
+    "@logicflow/extension": "^1.2.25",
     "axios": "^1.2.2",
     "d3-sankey": "^0.12.3",
     "element-ui": "^2.15.12",
